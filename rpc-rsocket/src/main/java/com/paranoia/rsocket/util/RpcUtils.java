@@ -21,15 +21,32 @@ public class RpcUtils {
      * @return <T> 具体对象
      */
     public static Object decodePayload(Payload payload) {
+        InputStream dataInputStream = null;
+        ObjectInput in = null;
         try {
             ByteBuffer dataBuffer = payload.getData();
             byte[] dataBytes = new byte[dataBuffer.remaining()];
             dataBuffer.get(dataBytes, dataBuffer.position(), dataBuffer.remaining());
-            InputStream dataInputStream = new ByteArrayInputStream(dataBytes);
-            ObjectInput in = new ObjectInputStream(dataInputStream);
+            dataInputStream = new ByteArrayInputStream(dataBytes);
+            in = new ObjectInputStream(dataInputStream);
             return in.readObject();
         } catch (Throwable t) {
             throw Exceptions.propagate(t);
+        } finally {
+            if (dataInputStream != null) {
+                try {
+                    dataInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -40,16 +57,31 @@ public class RpcUtils {
      * @return payload对象
      */
     public static Payload convertIntoPayload(Object object) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out = null;
         try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutput out = new ObjectOutputStream(bos);
+            out = new ObjectOutputStream(bos);
             out.writeObject(object);
             out.flush();
             bos.flush();
-            bos.close();
             return DefaultPayload.create(bos.toByteArray());
         } catch (Throwable throwable) {
             throw Exceptions.propagate(throwable);
+        } finally {
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

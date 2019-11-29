@@ -1,6 +1,6 @@
 package com.paranoia.rsocket.client;
 
-import com.paranoia.common.InvokeMessage;
+import com.paranoia.rsocket.InvokeMessage;
 import com.paranoia.rsocket.util.RpcUtils;
 import io.rsocket.RSocketFactory;
 import io.rsocket.transport.netty.client.TcpClientTransport;

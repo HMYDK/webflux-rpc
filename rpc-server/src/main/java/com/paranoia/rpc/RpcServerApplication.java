@@ -1,5 +1,6 @@
 package com.paranoia.rpc;
 
+import com.paranoia.rsocket.annotation.EnableWebFluxRpc;
 import com.paranoia.rsocket.server.RsocketProtocol;
 import io.netty.channel.ChannelOption;
 import io.rsocket.RSocketFactory;
@@ -10,15 +11,11 @@ import org.springframework.context.annotation.ComponentScan;
 import reactor.netty.tcp.TcpServer;
 
 @SpringBootApplication
+@EnableWebFluxRpc(rpcServerServicePackages = {"com.paranoia.rpc.service"})
 public class RpcServerApplication {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(RpcServerApplication.class, args);
-
-        RsocketProtocol rsocketProtocol = new RsocketProtocol();
-        //todo : 注解实现包的扫描
-        rsocketProtocol.getProviderClass("com.paranoia.rpc.service");
-        rsocketProtocol.doRegister();
 
         TcpServer tcpServer = TcpServer.create()
                 .host("localhost")

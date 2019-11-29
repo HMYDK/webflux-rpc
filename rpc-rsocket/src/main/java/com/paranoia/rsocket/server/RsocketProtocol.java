@@ -1,8 +1,9 @@
 package com.paranoia.rsocket.server;
 
-import com.paranoia.common.InvokeMessage;
+import com.paranoia.rsocket.InvokeMessage;
 import com.paranoia.rsocket.util.RpcUtils;
 import io.rsocket.*;
+import org.springframework.util.CollectionUtils;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 import java.io.File;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author ZHANGKAI
@@ -25,21 +27,30 @@ public class RsocketProtocol {
     /**
      * 本地服务注册表
      */
-    private static Map<String, Object> registerMap = new HashMap<>();
+    private static ConcurrentHashMap<String, Object> registerMap = new ConcurrentHashMap<>();
+
+    public void registerRpcServerServicePackages(Collection<String> collection) {
+        if (CollectionUtils.isEmpty(collection)) {
+            return;
+        }
+        collection.forEach(this::getProviderClass);
+    }
 
     /**
      * 将指定包下的提供者名称写入到classCache中
-     * todo : 基于注解扫描的方式
+     *
      * @param providerPackage com.xx.xxx.service
      */
-
-    public void getProviderClass(String providerPackage) {
+    private void getProviderClass(String providerPackage) {
         // 将字符串的包转化为了URL对象资源
         URL resource = this.getClass().getClassLoader().getResource(providerPackage.replaceAll("\\.", "/"));
+        if (resource == null) {
+            return;
+        }
         // 将URL转化为File
         File dir = new File(resource.getFile());
 
-        Arrays.stream(dir.listFiles())
+        Arrays.stream(Objects.requireNonNull(dir.listFiles()))
                 .forEach(file -> {
                     if (file.isDirectory()) {
                         getProviderClass(providerPackage + "." + file.getName());
@@ -67,6 +78,10 @@ public class RsocketProtocol {
             Class<?> clazz = Class.forName(className);
             registerMap.put(clazz.getInterfaces()[0].getName(), clazz.newInstance());
         }
+    }
+
+    public int getClassCacheSize() {
+        return classCache.size();
     }
 
     /**

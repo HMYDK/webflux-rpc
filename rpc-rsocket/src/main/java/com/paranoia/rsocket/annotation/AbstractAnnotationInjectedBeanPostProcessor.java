@@ -36,6 +36,7 @@ import static org.springframework.core.BridgeMethodResolver.isVisibilityBridgeMe
  * @author ZHANGKAI
  * @date 2019/11/28
  * @description
+ * The source code is cloned from https://github.com/alibaba/spring-context-support/blob/1.0.2/src/main/java/com/alibaba/spring/beans/factory/annotation/AnnotationInjectedBeanPostProcessor.java
  */
 public abstract class AbstractAnnotationInjectedBeanPostProcessor<A extends Annotation>
         extends InstantiationAwareBeanPostProcessorAdapter

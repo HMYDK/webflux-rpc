@@ -1,6 +1,6 @@
 package com.paranoia.client;
 
-import com.paranoia.rsocket.annotation.EnableWebFluxRpcClient;
+import com.paranoia.rsocket.annotation.EnableWebFluxRpc;
 import com.paranoia.rsocket.client.RpcProxy;
 import io.netty.channel.ChannelOption;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +12,7 @@ import reactor.netty.tcp.TcpClient;
 /**
  *  支持自定义rpc客户端注解
  */
-@EnableWebFluxRpcClient
+@EnableWebFluxRpc
 public class RpcClientApplication {
 
     public static void main(String[] args) {

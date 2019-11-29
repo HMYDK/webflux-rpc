@@ -1,4 +1,4 @@
-package com.paranoia.common;
+package com.paranoia.rsocket;
 
 import lombok.Data;
 
