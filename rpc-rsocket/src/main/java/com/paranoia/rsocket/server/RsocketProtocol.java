@@ -9,10 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ZHANGKAI
@@ -32,7 +29,7 @@ public class RsocketProtocol {
 
     /**
      * 将指定包下的提供者名称写入到classCache中
-     *
+     * todo : 基于注解扫描的方式
      * @param providerPackage com.xx.xxx.service
      */
 
@@ -41,18 +38,18 @@ public class RsocketProtocol {
         URL resource = this.getClass().getClassLoader().getResource(providerPackage.replaceAll("\\.", "/"));
         // 将URL转化为File
         File dir = new File(resource.getFile());
-        // 启动指定包的目录，查找.class文件
-        for (File file : dir.listFiles()) {
-            // 若当前遍历的是目录，则递归
-            if (file.isDirectory()) {
-                getProviderClass(providerPackage + "." + file.getName());
-            } else if (file.getName().endsWith(".class")) {
-                // 获取去掉.class扩展名的简单类名
-                String fileName = file.getName().replace(".class", "").trim();
-                // 将全限定性类名写入到classCache中
-                classCache.add(providerPackage + "." + fileName);
-            }
-        }
+
+        Arrays.stream(dir.listFiles())
+                .forEach(file -> {
+                    if (file.isDirectory()) {
+                        getProviderClass(providerPackage + "." + file.getName());
+                    } else if (file.getName().endsWith(".class")) {
+                        // 获取去掉.class扩展名的简单类名
+                        String fileName = file.getName().replace(".class", "").trim();
+                        // 将全限定性类名写入到classCache中
+                        classCache.add(providerPackage + "." + fileName);
+                    }
+                });
     }
 
     /**

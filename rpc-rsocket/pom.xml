@@ -37,10 +37,23 @@
             <version>0.11.14</version>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>org.aspectj</groupId>-->
+            <!--<artifactId>aspectjweaver</artifactId>-->
+            <!--<version>1.9.1</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.56</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.1.9.RELEASE</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -49,4 +62,5 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
 </project>

@@ -20,16 +20,16 @@ import java.lang.reflect.Proxy;
  */
 public class RpcProxy {
 
-    private TcpClient tcpClient;
+    private  TcpClient tcpClient;
 
     public RpcProxy(TcpClient tcpClient) {
         this.tcpClient = tcpClient;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T create(Class<?> clazz) {
+    public  <T> T create(Class<?> clazz,ClassLoader classLoader) {
         return (T) Proxy.newProxyInstance(
-                clazz.getClassLoader(),
+                classLoader,
                 new Class[]{clazz},
                 new InvocationHandler() {
 
@@ -54,7 +54,7 @@ public class RpcProxy {
         );
     }
 
-    private Publisher monoRpcInvoke(Class<?> clazz, Method method, Object[] args) {
+    private  Publisher monoRpcInvoke(Class<?> clazz, Method method, Object[] args) {
         InvokeMessage invokeMessage = getRequestInfo(clazz, method, args);
 
         return RSocketFactory.connect()
@@ -66,7 +66,7 @@ public class RpcProxy {
                 );
     }
 
-    private Publisher fluxRpcInvoke(Class<?> clazz, Method method, Object[] args) {
+    private  Publisher fluxRpcInvoke(Class<?> clazz, Method method, Object[] args) {
         InvokeMessage invokeMessage = getRequestInfo(clazz, method, args);
 
         return RSocketFactory.connect()
@@ -87,7 +87,7 @@ public class RpcProxy {
      * @param args   args
      * @return InvokeMessage
      */
-    private InvokeMessage getRequestInfo(Class<?> clazz, Method method, Object[] args) {
+    private  InvokeMessage getRequestInfo(Class<?> clazz, Method method, Object[] args) {
         InvokeMessage message = new InvokeMessage();
         message.setClassName(clazz.getName());
         message.setMethodName(method.getName());

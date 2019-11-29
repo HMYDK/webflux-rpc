@@ -31,9 +31,9 @@ public class HelloServiceImpl implements HelloService {
 
     @Override
     public Mono<String> sayHiReactive(String name, int age) {
-        for (int i = 0; i < 1000000; i++) {
-            System.out.println("i = " + i);
-        }
+//        for (int i = 0; i < 1000000; i++) {
+//            System.out.println("i = " + i);
+//        }
         if (age == 2) {
             throw new RuntimeException("测试异常");
         }
