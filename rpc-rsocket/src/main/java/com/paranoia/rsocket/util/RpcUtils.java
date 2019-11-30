@@ -68,12 +68,10 @@ public class RpcUtils {
         } catch (Throwable throwable) {
             throw Exceptions.propagate(throwable);
         } finally {
-            if (bos != null) {
-                try {
-                    bos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             if (out != null) {
                 try {

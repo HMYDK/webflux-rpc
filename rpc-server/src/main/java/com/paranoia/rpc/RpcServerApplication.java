@@ -14,9 +14,8 @@ import javax.annotation.PostConstruct;
 @EnableWebFluxRpc(rpcServerServicePackages = {"com.paranoia.rpc.service"})
 public class RpcServerApplication {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args){
         SpringApplication.run(RpcServerApplication.class, args);
-
     }
 
     @Value("${webflux.rpc.server.host}")

@@ -52,6 +52,8 @@ public class EnableWebFluxRpcClientScanRegistrar implements ImportBeanDefinition
                 logger.error("RsocketProtocol.doRegister error");
             }
             e.printStackTrace();
+            //todo : necessary ?
+            System.exit(500);
         }
         logger.info("Register rpc-server service class amount :" + rsocketProtocol.getClassCacheSize());
     }
