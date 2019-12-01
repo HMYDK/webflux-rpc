@@ -20,7 +20,7 @@ public class TcpUtils {
     public static void registerTcpServer(String host, int port) {
 
         try {
-            checkHostAndPort(host, port);
+            //checkHostAndPort(host, port);
             TcpServer tcpServer = TcpServer.create()
                                            .host(host)
                                            .port(port)
@@ -46,7 +46,7 @@ public class TcpUtils {
     public static TcpClient getTcpClient(String host, int port) {
         TcpClient tcpClient = null;
         try {
-            checkHostAndPort(host, port);
+            //checkHostAndPort(host, port);
             tcpClient = TcpClient.create()
                                  .host(host)
                                  .port(port)

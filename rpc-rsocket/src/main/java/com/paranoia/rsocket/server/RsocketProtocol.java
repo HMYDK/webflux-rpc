@@ -91,7 +91,8 @@ public class RsocketProtocol {
     public static class SocketAcceptorImpl implements SocketAcceptor {
 
         @Override
-        public Mono<RSocket> accept(ConnectionSetupPayload setupPayload, RSocket reactiveSocket) {
+        public Mono<RSocket> accept(ConnectionSetupPayload setupPayload, RSocket sendingSocket) {
+            System.out.println("sendingSocket = " + sendingSocket.availability());
             return Mono.just(
                     new AbstractRSocket() {
                         @Override
