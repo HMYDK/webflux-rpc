@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+
 @SpringBootApplication
 /**
  *  支持自定义rpc客户端注解

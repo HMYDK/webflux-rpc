@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.5.RELEASE</version>
+        <version>2.2.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.paranoia.rpc.server</groupId>
-    <artifactId>rpc-server</artifactId>
+    <groupId>com.example</groupId>
+    <artifactId>demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>rpc-server</name>
+    <name>demo</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -24,40 +24,17 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>io.netty</groupId>-->
-            <!--<artifactId>netty-all</artifactId>-->
-            <!--<version>4.1.38.Final</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>com.paranoia</groupId>
-            <artifactId>rpc-api</artifactId>
-            <version>0.0.1-SNAPSHO</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.paranoia.rpc</groupId>
-            <artifactId>rpc-rsocket</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
         <!--spring boot admin-->
         <dependency>
             <groupId>de.codecentric</groupId>
-            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <artifactId>spring-boot-admin-server</artifactId>
             <version>2.2.0</version>
         </dependency>
 
-
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-server-ui</artifactId>
+            <version>2.2.0</version>
         </dependency>
     </dependencies>
 
