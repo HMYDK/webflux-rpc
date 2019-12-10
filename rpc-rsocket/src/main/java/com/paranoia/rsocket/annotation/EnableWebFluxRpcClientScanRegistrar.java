@@ -4,8 +4,8 @@ import com.paranoia.rsocket.server.RsocketProtocol;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.beans.factory.support.*;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
@@ -29,13 +29,13 @@ public class EnableWebFluxRpcClientScanRegistrar implements ImportBeanDefinition
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
 
         //注册服务提供者实现的api-service实现类
-        registerRpcServerServiceImpls(annotationMetadata);
+        registerRpcServerServiceImpls(annotationMetadata, beanDefinitionRegistry);
 
         //注册@Reference bean
         registerReferenceAnnotationBeanPostProcessor(beanDefinitionRegistry);
     }
 
-    private void registerRpcServerServiceImpls(AnnotationMetadata annotationMetadata) {
+    private void registerRpcServerServiceImpls(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
         Set<String> packagesToScan = getPackagesToScan(annotationMetadata);
 
         logger.info("Register rpc-server service packages amount :" + packagesToScan.size());
@@ -43,27 +43,23 @@ public class EnableWebFluxRpcClientScanRegistrar implements ImportBeanDefinition
             return;
         }
 
-        RsocketProtocol rsocketProtocol = new RsocketProtocol();
-        rsocketProtocol.registerRpcServerServicePackages(packagesToScan);
-        try {
-            rsocketProtocol.doRegister();
-        } catch (Exception e) {
-            if (logger.isErrorEnabled()) {
-                logger.error("RsocketProtocol.doRegister error");
-            }
-            e.printStackTrace();
-            //todo : necessary ?
-            System.exit(500);
-        }
-        logger.info("Register rpc-server service class amount :" + rsocketProtocol.getClassCacheSize());
+        //构建ServiceAnnotationBeanPostProcessor的 BeanDefinitionBuilder
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(WebFluxRpcSpringServiceAnnotationBeanPostProcessor.class);
+        builder.addConstructorArgValue(packagesToScan).addConstructorArgValue(new RsocketProtocol());
+        builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+        AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();
+        //创建BeanDefinition并注册到容器中
+        BeanDefinitionReaderUtils.registerWithGeneratedName(beanDefinition, beanDefinitionRegistry);
+
+        //todo : log RsocketProtocol registerMap size
     }
 
-    private void registerReferenceAnnotationBeanPostProcessor(BeanDefinitionRegistry registry) {
+    private void registerReferenceAnnotationBeanPostProcessor(BeanDefinitionRegistry beanDefinitionRegistry) {
 
-        if (!registry.containsBeanDefinition(WebFluxRpcReferenceAnnotationBeanPostProcessor.BEAN_NAME)) {
+        if (!beanDefinitionRegistry.containsBeanDefinition(WebFluxRpcReferenceAnnotationBeanPostProcessor.BEAN_NAME)) {
             RootBeanDefinition beanDefinition = new RootBeanDefinition(WebFluxRpcReferenceAnnotationBeanPostProcessor.class);
             beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-            registry.registerBeanDefinition(WebFluxRpcReferenceAnnotationBeanPostProcessor.BEAN_NAME, beanDefinition);
+            beanDefinitionRegistry.registerBeanDefinition(WebFluxRpcReferenceAnnotationBeanPostProcessor.BEAN_NAME, beanDefinition);
         }
 
     }
@@ -80,4 +76,6 @@ public class EnableWebFluxRpcClientScanRegistrar implements ImportBeanDefinition
 
         return new LinkedHashSet<>(Arrays.asList(rpcServerServicePackages));
     }
+
+
 }

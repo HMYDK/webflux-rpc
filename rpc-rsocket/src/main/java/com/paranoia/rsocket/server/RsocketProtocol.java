@@ -3,6 +3,7 @@ package com.paranoia.rsocket.server;
 import com.paranoia.rsocket.InvokeMessage;
 import com.paranoia.rsocket.util.RpcUtils;
 import io.rsocket.*;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.CollectionUtils;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
@@ -29,60 +30,12 @@ public class RsocketProtocol {
      */
     private static ConcurrentHashMap<String, Object> registerMap = new ConcurrentHashMap<>();
 
-    public void registerRpcServerServicePackages(Collection<String> collection) {
-        if (CollectionUtils.isEmpty(collection)) {
-            return;
-        }
-        collection.forEach(this::getProviderClass);
-    }
-
-    /**
-     * 将指定包下的提供者名称写入到classCache中
-     *
-     * @param providerPackage com.xx.xxx.service
-     */
-    private void getProviderClass(String providerPackage) {
-        // 将字符串的包转化为了URL对象资源
-        URL resource = this.getClass().getClassLoader().getResource(providerPackage.replaceAll("\\.", "/"));
-        if (resource == null) {
-            return;
-        }
-        // 将URL转化为File
-        File dir = new File(resource.getFile());
-
-        Arrays.stream(Objects.requireNonNull(dir.listFiles()))
-                .forEach(file -> {
-                    if (file.isDirectory()) {
-                        getProviderClass(providerPackage + "." + file.getName());
-                    } else if (file.getName().endsWith(".class")) {
-                        // 获取去掉.class扩展名的简单类名
-                        String fileName = file.getName().replace(".class", "").trim();
-                        // 将全限定性类名写入到classCache中
-                        classCache.add(providerPackage + "." + fileName);
-                    }
-                });
-        //log necessary ?
-    }
 
     /**
      * 将服务名称与提供者实例之间的映射关系写入到registerMap
-     *
-     * @throws Exception 反射触发的异常
      */
-    public void doRegister() throws Exception {
-        // 若没有提供者类，则无需注册
-        if (classCache.size() == 0) {
-            return;
-        }
-        // registerMap的key为接口名，value为该接口对应的实现类的实例
-        for (String className : classCache) {
-            Class<?> clazz = Class.forName(className);
-            registerMap.put(clazz.getInterfaces()[0].getName(), clazz.newInstance());
-        }
-    }
-
-    public int getClassCacheSize() {
-        return classCache.size();
+    public void doRegister(String key, Object value) {
+        registerMap.put(key, value);
     }
 
     /**
@@ -92,7 +45,7 @@ public class RsocketProtocol {
 
         @Override
         public Mono<RSocket> accept(ConnectionSetupPayload setupPayload, RSocket sendingSocket) {
-            System.out.println("sendingSocket = " + sendingSocket.availability());
+//    todo :        System.out.println("sendingSocket = " + sendingSocket.availability());
             return Mono.just(
                     new AbstractRSocket() {
                         @Override
@@ -107,6 +60,7 @@ public class RsocketProtocol {
 
                     });
         }
+
     }
 
     @SuppressWarnings("unchecked")

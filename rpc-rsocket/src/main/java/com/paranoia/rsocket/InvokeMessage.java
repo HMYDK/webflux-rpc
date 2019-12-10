@@ -1,7 +1,5 @@
 package com.paranoia.rsocket;
 
-import lombok.Data;
-
 import java.io.Serializable;
 
 /**
@@ -9,7 +7,6 @@ import java.io.Serializable;
  * @date 2019/9/18
  * @description : 封装服务调用信息
  */
-@Data
 public class InvokeMessage implements Serializable {
 
     /**
@@ -31,4 +28,37 @@ public class InvokeMessage implements Serializable {
      * 方法参数值
      */
     private Object[] paramValues;
+
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public Class<?>[] getParamTypes() {
+        return paramTypes;
+    }
+
+    public void setParamTypes(Class<?>[] paramTypes) {
+        this.paramTypes = paramTypes;
+    }
+
+    public Object[] getParamValues() {
+        return paramValues;
+    }
+
+    public void setParamValues(Object[] paramValues) {
+        this.paramValues = paramValues;
+    }
 }

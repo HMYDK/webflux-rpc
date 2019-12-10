@@ -1,5 +1,6 @@
 package com.paranoia.rsocket.annotation;
 
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

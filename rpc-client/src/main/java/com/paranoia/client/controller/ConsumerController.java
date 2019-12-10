@@ -79,6 +79,15 @@ public class ConsumerController {
 
         return helloService.getPersonInfos(person);
     }
+
+    @GetMapping("/reactive/service-circular-dependency")
+    public Mono<String> testServiceCircularDependency(String name) {
+        return helloService.testServiceCircularDependency(name)
+                .onErrorResume(e -> {
+                    e.printStackTrace();
+                    return Mono.just("service error ~");
+                });
+    }
 }
 
 

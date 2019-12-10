@@ -22,6 +22,7 @@
 - [x] TcpUtils -> check host and port effective
 - [ ] 服务链路中filter热插拔，用以支持性能监控、业务定制等
 - [ ] 补充Rsocket的健康检查（RSocket.availability）
+- [ ] netty端口复用异常问题
 - [ ] 性能测试
 
 
