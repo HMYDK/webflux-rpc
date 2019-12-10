@@ -3,12 +3,16 @@ package com.paranoia.rsocket.annotation;
 import com.paranoia.rsocket.server.RsocketProtocol;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
@@ -20,10 +24,16 @@ import java.util.Set;
  * @date 2019/11/28
  * @description
  */
-public class EnableWebFluxRpcClientScanRegistrar implements ImportBeanDefinitionRegistrar {
+public class EnableWebFluxRpcClientScanRegistrar implements ApplicationContextAware, ImportBeanDefinitionRegistrar {
 
     private final Log logger = LogFactory.getLog(getClass());
 
+    private ApplicationContext applicationContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry) {
@@ -46,7 +56,7 @@ public class EnableWebFluxRpcClientScanRegistrar implements ImportBeanDefinition
         RsocketProtocol rsocketProtocol = new RsocketProtocol();
         rsocketProtocol.registerRpcServerServicePackages(packagesToScan);
         try {
-            rsocketProtocol.doRegister();
+            rsocketProtocol.doRegister(applicationContext);
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("RsocketProtocol.doRegister error");
@@ -80,4 +90,6 @@ public class EnableWebFluxRpcClientScanRegistrar implements ImportBeanDefinition
 
         return new LinkedHashSet<>(Arrays.asList(rpcServerServicePackages));
     }
+
+
 }

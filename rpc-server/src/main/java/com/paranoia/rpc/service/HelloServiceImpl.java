@@ -1,8 +1,10 @@
 package com.paranoia.rpc.service;
 
 import com.paranoia.api.service.HelloService;
+import com.paranoia.api.service.TestService;
 import com.paranoia.common.bo.Address;
 import com.paranoia.common.bo.Person;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -23,6 +25,9 @@ import java.util.stream.Stream;
  */
 @Service
 public class HelloServiceImpl implements HelloService {
+
+    @Autowired
+    TestService testService;
 
     @Override
     public String sayHi(String name, int age) {
@@ -74,5 +79,10 @@ public class HelloServiceImpl implements HelloService {
                 });
 
         return Flux.fromStream(personStream);
+    }
+
+    @Override
+    public Mono<String> testServiceCircularDependency(String name) {
+        return testService.test(name);
     }
 }

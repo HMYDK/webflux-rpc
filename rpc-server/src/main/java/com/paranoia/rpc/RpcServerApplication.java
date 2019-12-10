@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 
 @Slf4j
 @SpringBootApplication
-@EnableWebFluxRpc(rpcServerServicePackages = {"com.paranoia.rpc.service"})
+@EnableWebFluxRpc(rpcServerServicePackages = {"com.paranoia.api.service"})
 public class RpcServerApplication {
 
     public static void main(String[] args){
