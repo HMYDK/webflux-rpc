@@ -22,21 +22,22 @@ public class TcpUtils {
         try {
             //checkHostAndPort(host, port);
             TcpServer tcpServer = TcpServer.create()
-                                           .host(host)
-                                           .port(port)
-                                           .option(ChannelOption.TCP_NODELAY, Boolean.TRUE)
-                                           .option(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
-                                           .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
-                                           .option(ChannelOption.SO_REUSEADDR, Boolean.TRUE);
+                    .host(host)
+                    .port(port)
+                    .option(ChannelOption.SO_BACKLOG, 1000)//服务端将不能处理的客户端连接请求放在队列中等待处理，backlog参数指定了队列的大小
+                    .option(ChannelOption.TCP_NODELAY, Boolean.TRUE)
+//                    .option(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                    .option(ChannelOption.SO_REUSEADDR, Boolean.TRUE);//允许重复使用本地地址和端口
 
             RSocketFactory.receive()
-                          .acceptor(new RsocketProtocol.SocketAcceptorImpl())
-                          .transport(TcpServerTransport.create(tcpServer))
-                          .start()
-                          .subscribe(closeableChannel -> {
-                              //log.info("Initialization RpcServer Succeed");
-                              System.out.println("Initialization RpcServer Succeed");
-                          });
+                    .acceptor(new RsocketProtocol.SocketAcceptorImpl())
+                    .transport(TcpServerTransport.create(tcpServer))
+                    .start()
+                    .subscribe(closeableChannel -> {
+                        //log.info("Initialization RpcServer Succeed");
+                        System.out.println("Initialization RpcServer Succeed");
+                    });
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Register tcp-server failure :" + e.getLocalizedMessage());
@@ -48,12 +49,12 @@ public class TcpUtils {
         try {
             //checkHostAndPort(host, port);
             tcpClient = TcpClient.create()
-                                 .host(host)
-                                 .port(port)
-                                 .option(ChannelOption.TCP_NODELAY, Boolean.TRUE)
-                                 .option(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
-                                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
-                                 .option(ChannelOption.SO_REUSEADDR, Boolean.TRUE);
+                    .host(host)
+                    .port(port)
+                    .option(ChannelOption.TCP_NODELAY, Boolean.TRUE)
+                    .option(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                    .option(ChannelOption.SO_REUSEADDR, Boolean.TRUE);//允许重复使用本地地址和端口
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Create tcp-client failure :" + e.getLocalizedMessage());
